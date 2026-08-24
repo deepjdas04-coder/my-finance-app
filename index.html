@@ -1,0 +1,1342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>My Finance Dashboard</title>
+
+<style>
+:root{
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --text:#172033;
+  --muted:#687386;
+  --primary:#3157d5;
+  --border:#e5e9f2;
+  --good:#16834a;
+  --bad:#c63d3d;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+header{
+  background:linear-gradient(135deg,#233a9b,#3157d5);
+  color:white;
+  padding:22px 18px 28px;
+}
+
+header h1{
+  margin:0;
+  font-size:25px;
+}
+
+header p{
+  margin:6px 0 0;
+  opacity:.85;
+}
+
+main{
+  max-width:1050px;
+  margin:-14px auto 40px;
+  padding:0 14px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:17px;
+  box-shadow:0 4px 18px #18264d0b;
+}
+
+.label{
+  font-size:13px;
+  color:var(--muted);
+}
+
+.value{
+  font-size:24px;
+  font-weight:750;
+  margin-top:6px;
+}
+
+.good{
+  color:var(--good);
+}
+
+.bad{
+  color:var(--bad);
+}
+
+nav{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  margin:18px 0;
+}
+
+button{
+  border:0;
+  border-radius:10px;
+  padding:11px 14px;
+  background:#e9edf8;
+  color:#27334b;
+  font-weight:650;
+  cursor:pointer;
+}
+
+button.active,
+button.primary{
+  background:var(--primary);
+  color:white;
+}
+
+section{
+  display:none;
+}
+
+.active-section{
+  display:block;
+}
+
+.panel{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:14px;
+}
+
+.panel h2{
+  margin:0 0 14px;
+  font-size:18px;
+}
+
+.formgrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.field label{
+  display:block;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+.field input{
+  width:100%;
+  padding:11px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  font-size:15px;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+  margin:10px 0;
+}
+
+.row span{
+  color:var(--muted);
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
+
+.bar{
+  height:11px;
+  background:#edf0f6;
+  border-radius:99px;
+  overflow:hidden;
+}
+
+.bar i{
+  display:block;
+  height:100%;
+  background:var(--primary);
+  width:0;
+}
+
+.hint{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:8px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+td,
+th{
+  text-align:left;
+  padding:10px;
+  border-bottom:1px solid var(--border);
+  font-size:14px;
+}
+
+footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  padding:10px;
+}
+
+@media(max-width:750px){
+
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .formgrid{
+    grid-template-columns:1fr;
+  }
+
+  .value{
+    font-size:20px;
+  }
+}
+</style>
+</head>
+
+
+<body>
+
+<header>
+
+<h1>💰 My Finance Dashboard</h1>
+
+<p>
+Salary • Expenses • Savings • Investments • Goals
+</p>
+
+</header>
+
+
+<main>
+
+<nav id="nav">
+
+<button class="active" data-tab="dashboard">
+Dashboard
+</button>
+
+<button data-tab="salary">
+Salary
+</button>
+
+<button data-tab="expenses">
+Expenses
+</button>
+
+<button data-tab="investments">
+Investments
+</button>
+
+<button data-tab="goals">
+Goals
+</button>
+
+</nav>
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="active-section">
+
+<div class="grid">
+
+<div class="card">
+
+<div class="label">
+Income
+</div>
+
+<div class="value" id="dIncome">
+₹0
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="label">
+Expenses
+</div>
+
+<div class="value" id="dExpenses">
+₹0
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="label">
+Investments
+</div>
+
+<div class="value" id="dInvest">
+₹0
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="label">
+Savings
+</div>
+
+<div class="value good" id="dSavings">
+₹0
+</div>
+
+</div>
+
+</div>
+
+
+<div class="panel" style="margin-top:14px">
+
+<h2>
+Monthly Financial Health
+</h2>
+
+<div class="row">
+
+<span>
+Savings Rate
+</span>
+
+<strong id="dRate">
+0%
+</strong>
+
+</div>
+
+<div class="bar">
+
+<i id="rateBar"></i>
+
+</div>
+
+<p class="hint" id="advice">
+
+Enter your salary and expenses to see your financial status.
+
+</p>
+
+</div>
+
+
+<div class="panel">
+
+<h2>
+Monthly Summary
+</h2>
+
+<table>
+
+<tbody>
+
+<tr>
+
+<td>
+Fixed Expenses
+</td>
+
+<td id="qFixed">
+₹0
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+Variable Expenses
+</td>
+
+<td id="qVariable">
+₹0
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+Monthly Investments
+</td>
+
+<td id="qInvest">
+₹0
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+Free Cash
+</td>
+
+<td id="qFree">
+₹0
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+
+<!-- SALARY -->
+
+<section id="salary">
+
+<div class="panel">
+
+<h2>
+Monthly Income
+</h2>
+
+<div class="formgrid">
+
+<div class="field">
+
+<label>
+In-hand / Net Salary
+</label>
+
+<input
+id="salary"
+type="number"
+min="0"
+placeholder="26810"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Other Income
+</label>
+
+<input
+id="otherIncome"
+type="number"
+min="0"
+placeholder="0"
+>
+
+</div>
+
+</div>
+
+
+<div class="actions">
+
+<button
+class="primary"
+onclick="save()">
+
+Save Salary
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- EXPENSES -->
+
+<section id="expenses">
+
+<div class="panel">
+
+<h2>
+Monthly Expenses
+</h2>
+
+<div class="formgrid">
+
+
+<div class="field">
+
+<label>
+Home / Rent / Home EMI
+</label>
+
+<input
+data-exp="home"
+type="number"
+placeholder="0"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Car / Vehicle EMI
+</label>
+
+<input
+data-exp="vehicle"
+type="number"
+placeholder="0"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Travel / Fuel
+</label>
+
+<input
+data-exp="travel"
+type="number"
+placeholder="0"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Food / Groceries
+</label>
+
+<input
+data-exp="food"
+type="number"
+placeholder="0"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Mobile / Internet
+</label>
+
+<input
+data-exp="mobile"
+type="number"
+placeholder="0"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Electricity / Utilities
+</label>
+
+<input
+data-exp="utilities"
+type="number"
+placeholder="0"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Shopping
+</label>
+
+<input
+data-exp="shopping"
+type="number"
+placeholder="0"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Medical
+</label>
+
+<input
+data-exp="medical"
+type="number"
+placeholder="0"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Entertainment
+</label>
+
+<input
+data-exp="entertainment"
+type="number"
+placeholder="0"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Other
+</label>
+
+<input
+data-exp="other"
+type="number"
+placeholder="0"
+>
+
+</div>
+
+
+</div>
+
+
+<div class="actions">
+
+<button
+class="primary"
+onclick="save()">
+
+Save Expenses
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- INVESTMENTS -->
+
+<section id="investments">
+
+<div class="panel">
+
+<h2>
+Monthly Investments
+</h2>
+
+<div class="formgrid">
+
+
+<div class="field">
+
+<label>
+Mutual Funds
+</label>
+
+<input
+data-inv="mf"
+type="number"
+placeholder="0"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+PPF
+</label>
+
+<input
+data-inv="ppf"
+type="number"
+placeholder="0"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+FD / RD
+</label>
+
+<input
+data-inv="fd"
+type="number"
+placeholder="0"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Other Investments
+</label>
+
+<input
+data-inv="other"
+type="number"
+placeholder="0"
+>
+
+</div>
+
+
+</div>
+
+
+<div class="actions">
+
+<button
+class="primary"
+onclick="save()">
+
+Save Investments
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- GOALS -->
+
+<section id="goals">
+
+<div class="panel">
+
+<h2>
+Savings Goal
+</h2>
+
+
+<div class="formgrid">
+
+
+<div class="field">
+
+<label>
+Goal Name
+</label>
+
+<input
+id="goalName"
+placeholder="Emergency Fund"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Target Amount
+</label>
+
+<input
+id="goalTarget"
+type="number"
+placeholder="100000"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Current Amount
+</label>
+
+<input
+id="goalCurrent"
+type="number"
+placeholder="35000"
+>
+
+</div>
+
+
+</div>
+
+
+<div class="actions">
+
+<button
+class="primary"
+onclick="save()">
+
+Save Goal
+
+</button>
+
+</div>
+
+
+<div style="margin-top:20px">
+
+<div class="row">
+
+<strong id="goalTitle">
+No goal set
+</strong>
+
+<span id="goalPct">
+0%
+</span>
+
+</div>
+
+
+<div class="bar">
+
+<i id="goalBar"></i>
+
+</div>
+
+
+<p
+class="hint"
+id="goalText">
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<footer>
+
+Your data is stored locally in this browser.
+
+</footer>
+
+</main>
+
+
+
+<script>
+
+const KEY = "myFinanceV1";
+
+
+let data =
+JSON.parse(
+localStorage.getItem(KEY) || "null"
+)
+||
+{
+ salary:0,
+ otherIncome:0,
+
+ expenses:{},
+
+ investments:{},
+
+ goal:{
+  name:"",
+  target:0,
+  current:0
+ }
+};
+
+
+
+function money(n){
+
+return "₹" +
+Math.round(n || 0)
+.toLocaleString("en-IN");
+
+}
+
+
+function num(v){
+
+return Number(v) || 0;
+
+}
+
+
+
+function save(){
+
+data.salary =
+num(
+document.getElementById("salary").value
+);
+
+
+data.otherIncome =
+num(
+document.getElementById("otherIncome").value
+);
+
+
+
+document
+.querySelectorAll("[data-exp]")
+.forEach(x => {
+
+data.expenses[x.dataset.exp] =
+num(x.value);
+
+});
+
+
+
+document
+.querySelectorAll("[data-inv]")
+.forEach(x => {
+
+data.investments[x.dataset.inv] =
+num(x.value);
+
+});
+
+
+
+data.goal = {
+
+name:
+document.getElementById("goalName").value,
+
+target:
+num(
+document.getElementById("goalTarget").value
+),
+
+current:
+num(
+document.getElementById("goalCurrent").value
+)
+
+};
+
+
+
+localStorage.setItem(
+KEY,
+JSON.stringify(data)
+);
+
+
+render();
+
+
+alert("Saved successfully!");
+
+}
+
+
+
+function load(){
+
+document.getElementById("salary").value =
+data.salary || "";
+
+
+document.getElementById("otherIncome").value =
+data.otherIncome || "";
+
+
+
+document
+.querySelectorAll("[data-exp]")
+.forEach(x => {
+
+x.value =
+data.expenses[x.dataset.exp] || "";
+
+});
+
+
+
+document
+.querySelectorAll("[data-inv]")
+.forEach(x => {
+
+x.value =
+data.investments[x.dataset.inv] || "";
+
+});
+
+
+
+document.getElementById("goalName").value =
+data.goal.name || "";
+
+
+document.getElementById("goalTarget").value =
+data.goal.target || "";
+
+
+document.getElementById("goalCurrent").value =
+data.goal.current || "";
+
+}
+
+
+
+function render(){
+
+
+const income =
+num(data.salary) +
+num(data.otherIncome);
+
+
+
+const expenses =
+Object.values(data.expenses)
+.reduce(
+(a,b) => a+b,
+0
+);
+
+
+
+const fixed =
+[
+"home",
+"vehicle",
+"mobile",
+"utilities"
+]
+.reduce(
+(a,k) =>
+a + num(data.expenses[k]),
+0
+);
+
+
+
+const variable =
+expenses - fixed;
+
+
+
+const invest =
+Object.values(data.investments)
+.reduce(
+(a,b) => a+b,
+0
+);
+
+
+
+const savings =
+income -
+expenses -
+invest;
+
+
+
+const rate =
+income ?
+(savings / income) * 100 :
+0;
+
+
+
+document.getElementById("dIncome")
+.textContent =
+money(income);
+
+
+document.getElementById("dExpenses")
+.textContent =
+money(expenses);
+
+
+document.getElementById("dInvest")
+.textContent =
+money(invest);
+
+
+document.getElementById("dSavings")
+.textContent =
+money(savings);
+
+
+
+document.getElementById("dSavings")
+.className =
+"value " +
+(
+savings >= 0
+? "good"
+: "bad"
+);
+
+
+
+document.getElementById("dRate")
+.textContent =
+Math.round(rate * 10) / 10 +
+"%";
+
+
+
+document.getElementById("rateBar")
+.style.width =
+Math.max(
+0,
+Math.min(100,rate)
+) +
+"%";
+
+
+
+document.getElementById("qFixed")
+.textContent =
+money(fixed);
+
+
+document.getElementById("qVariable")
+.textContent =
+money(variable);
+
+
+document.getElementById("qInvest")
+.textContent =
+money(invest);
+
+
+document.getElementById("qFree")
+.textContent =
+money(savings);
+
+
+
+let advice;
+
+
+if(income === 0){
+
+advice =
+"Enter your salary and expenses to see your financial status.";
+
+}
+
+else if(savings < 0){
+
+advice =
+"🔴 You are spending more than your income. Review your expenses.";
+
+}
+
+else if(rate < 10){
+
+advice =
+"🟠 Your savings rate is below 10%. Consider reducing non-essential spending.";
+
+}
+
+else if(rate < 20){
+
+advice =
+"🟡 Good start. Try to increase your savings gradually.";
+
+}
+
+else{
+
+advice =
+"🟢 Excellent. Your savings rate is healthy.";
+
+}
+
+
+
+document.getElementById("advice")
+.textContent =
+advice;
+
+
+
+/* GOAL */
+
+
+const g = data.goal;
+
+
+let percentage =
+g.target
+?
+Math.min(
+100,
+(g.current / g.target) * 100
+)
+:
+0;
+
+
+
+document.getElementById("goalTitle")
+.textContent =
+g.name || "No goal set";
+
+
+document.getElementById("goalPct")
+.textContent =
+Math.round(percentage) +
+"%";
+
+
+document.getElementById("goalBar")
+.style.width =
+percentage +
+"%";
+
+
+
+document.getElementById("goalText")
+.textContent =
+g.target
+?
+money(g.current) +
+" of " +
+money(g.target) +
+" • Remaining " +
+money(
+Math.max(
+0,
+g.target - g.current
+)
+)
+:
+"Set a target and current amount.";
+
+}
+
+
+
+/* NAVIGATION */
+
+
+document
+.querySelectorAll("#nav button")
+.forEach(button => {
+
+button.onclick = () => {
+
+
+document
+.querySelectorAll("#nav button")
+.forEach(x =>
+x.classList.remove("active")
+);
+
+
+button.classList.add("active");
+
+
+
+document
+.querySelectorAll("section")
+.forEach(section =>
+section.classList.remove(
+"active-section"
+)
+);
+
+
+
+document
+.getElementById(
+button.dataset.tab
+)
+.classList.add(
+"active-section"
+);
+
+};
+
+});
+
+
+
+load();
+
+render();
+
+</script>
+
+</body>
+</html>
